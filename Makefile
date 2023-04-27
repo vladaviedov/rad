@@ -1,29 +1,43 @@
-AS=arm-none-eabi-gcc
-ASFLAGS=-nostdlib -e start
+AS=arm-none-eabi-as
+ASFLAGS=-mcpu=cortex-m0 -mthumb -g
+LD=arm-none-eabi-ld
+LDFLAGS=-T linker.ld
 OBJCOPY=arm-none-eabi-objcopy
-PROG=st-flash
+
+GDB=arm-none-eabi-gdb
+FLASH=st-flash
+CONN=st-util
 
 DIR=build
+OUT=$(DIR)/main.o
 ELF=$(DIR)/main.elf
 BIN=$(DIR)/main.bin
 
 .PHONY: _build
-_build: builddir $(BIN)
+_build: $(DIR) $(BIN)
 
 $(BIN): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
-$(ELF): main.s
+$(ELF): $(OUT)
+	$(LD) -o $@ $< $(LDFLAGS)
+
+$(OUT): main.s
 	$(AS) -o $@ $< $(ASFLAGS)
 
-.PHONY: builddir
-builddir:
+$(DIR):
 	mkdir -p $(DIR)
 
 .PHONY: flash
 flash:
-	$(PROG) write $(BIN) 0x8000000
+	$(FLASH) write $(BIN) 0x8000000
+
+.PHONY: debug
+debug:
+	$(CONN) &
+	$(GDB) -ex 'target extended-remote localhost:4242' -ex 'load' $(ELF)
 
 .PHONY: clean
 clean:
-	rm $(ELF) $(BIN)
+	rm $(OUT) $(ELF) $(BIN)
+	rmdir $(DIR)
