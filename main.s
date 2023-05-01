@@ -24,10 +24,18 @@
 .equ mode3_out, 0b01 << 6
 .equ data3_bit, 0b1 << 3
 
-.text
-.global _start
+.global vtable
+.global reset_handler
 
-_start:
+vtable:
+	.word _stack_end
+	.word reset_handler
+
+reset_handler:
+	ldr r0, =_stack_end
+	mov sp, r0
+
+start:
 	bl gpio_en
 	bl port3_out
 	bl port3_high

@@ -1,7 +1,7 @@
 AS=arm-none-eabi-as
 ASFLAGS=-mcpu=cortex-m0 -mthumb -g
 LD=arm-none-eabi-ld
-LDFLAGS=-T linker.ld
+LDFLAGS=-T linker.ld -e vtable
 OBJCOPY=arm-none-eabi-objcopy
 
 GDB=arm-none-eabi-gdb
