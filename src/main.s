@@ -1,6 +1,5 @@
 .syntax unified
 .cpu cortex-m0
-.align 8
 .thumb
 
 // AHBEN offset
@@ -24,18 +23,10 @@
 .equ mode3_out, 0b01 << 6
 .equ data3_bit, 0b1 << 3
 
-.global vtable
-.global reset_handler
+.global main
+.section .text
 
-vtable:
-	.word _stack_end
-	.word reset_handler
-
-reset_handler:
-	ldr r0, =_stack_end
-	mov sp, r0
-
-start:
+main:
 	bl gpio_en
 	bl port3_out
 	bl port3_high

@@ -9,6 +9,7 @@ _stack_end = 0x20010000;
 SECTIONS
 {
 	.text : {
+		build/reset.o (.text)
 		*(.text)
 	} > FLASH
 }
