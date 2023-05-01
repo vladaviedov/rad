@@ -1,43 +1,49 @@
 AS=arm-none-eabi-as
-ASFLAGS=-mcpu=cortex-m0 -mthumb -g
 LD=arm-none-eabi-ld
-LDFLAGS=-T linker.ld -e vtable
 OBJCOPY=arm-none-eabi-objcopy
-
 GDB=arm-none-eabi-gdb
-FLASH=st-flash
-CONN=st-util
 
-DIR=build
-OUT=$(DIR)/main.o
-ELF=$(DIR)/main.elf
-BIN=$(DIR)/main.bin
+ASFLAGS=-mcpu=cortex-m0 -mthumb -g
+LDFLAGS=-T linker.ld -e vtable
+
+BUILDDIR=build
+TARGET=$(BUILDDIR)/rad.bin
+ELF=$(BUILDDIR)/rad.elf
+
+SRCS=$(wildcard src/*.s)
+OBJS=$(patsubst %.s, $(BUILDDIR)/%.o, $(notdir $(SRCS)))
 
 .PHONY: _build
-_build: $(DIR) $(BIN)
+_build: $(BUILDDIR) $(TARGET)
 
-$(BIN): $(ELF)
+# Create build directory
+$(BUILDDIR):
+	mkdir -p $(BUILDDIR)
+
+# Make flash image
+$(TARGET): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
-$(ELF): $(OUT)
-	$(LD) -o $@ $< $(LDFLAGS)
+# Link ELF
+$(ELF): $(OBJS)
+	$(LD) -o $@ $^ $(LDFLAGS)
 
-$(OUT): main.s
+# Assemble sources
+$(BUILDDIR)/%.o: src/%.s
 	$(AS) -o $@ $< $(ASFLAGS)
 
-$(DIR):
-	mkdir -p $(DIR)
-
-.PHONY: flash
-flash:
-	$(FLASH) write $(BIN) 0x8000000
-
-.PHONY: debug
-debug:
-	$(CONN) &
-	$(GDB) -ex 'target extended-remote localhost:4242' -ex 'load' $(ELF)
-
+# Clean build files
 .PHONY: clean
 clean:
-	rm $(OUT) $(ELF) $(BIN)
-	rmdir $(DIR)
+	rm -r $(BUILDDIR)
+
+# Flash to device
+.PHONY: flash
+flash:
+	st-flash write $(TARGET) 0x8000000
+
+# Connect with GDB
+.PHONY: debug
+debug:
+	st-util &
+	$(GDB) -ex 'target extended-remote localhost:4242' -ex 'load' $(ELF)
