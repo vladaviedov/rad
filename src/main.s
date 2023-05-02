@@ -17,6 +17,9 @@ main:
 	movs r0, #3
 	movs r1, #1
 	bl gpiob_set_bit
+	// Enable I2C
+	bl i2c_enable
+	bl i2c_setup
 loop:
 	nop
 	b loop
