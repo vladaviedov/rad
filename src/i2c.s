@@ -9,6 +9,7 @@
 // Offsets
 .equ apb1en_off, 0x1c
 .equ cr1_off, 0x00
+.equ cr2_off, 0x04
 .equ timing_off, 0x10
 .equ datatx_off, 0x28
 
@@ -25,10 +26,12 @@
 // Masks (OR)
 .equ cr1_pe_on, 0x00000001
 .equ cr1_filter_analog, 0x00001000
-.equ timing_sm, 0x10420000
+.equ cr2_write_byte, 0x02012000
+.equ timing_sm, 0x10420f13
 
 .global i2c_enable
 .global i2c_setup
+.global i2c_write_byte
 
 .section .text
 /** Public */
@@ -50,6 +53,21 @@ i2c_setup:
 	bl i2c_take_pins
 	bl i2c_configure
 	pop {pc}
+
+/** Write data to I2C
+*	r0: addr
+*	r1: data
+*/
+i2c_write_byte:
+	// Write data
+
+	// Set address & initiate write
+	ldr r2, =(i2c + cr2_off)
+	ldr r3, =cr2_write_byte
+	orrs r3, r3, r0
+	movs r4, r3
+	str r4, [r2]
+	bx lr
 
 /** Private */
 
