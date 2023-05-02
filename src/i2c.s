@@ -18,11 +18,13 @@
 .equ scl_pin, 9
 .equ sda_pin, 10
 
-// Masks
+// Masks (AND)
 .equ cr1_pe_mask, 0xfffffffe
 .equ cr1_filter_mask, 0xffffe0ff
 .equ timing_mask, 0x0f00ffff
+// Masks (OR)
 .equ cr1_pe_on, 0x00000001
+.equ cr1_filter_analog, 0x00001000
 .equ timing_sm, 0x10420000
 
 .global i2c_enable
@@ -74,9 +76,11 @@ i2c_configure:
 	ldr r2, [r0]
 	ands r2, r2, r1
 	str r2, [r0]
-	// Disable filters
+	// Enable analog filter only
 	ldr r1, =cr1_filter_mask
 	ands r2, r2, r1
+	ldr r1, =cr1_filter_analog
+	orrs r2, r2, r1
 	str r2, [r0]
 	// Configure timing to standard mode
 	ldr r0, =(i2c + timing_off)
