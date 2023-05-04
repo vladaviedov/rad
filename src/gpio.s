@@ -10,7 +10,9 @@
 // Offsets
 .equ ahben_off, 0x14
 .equ mode_off, 0x00
+.equ otype_off, 0x04
 .equ data_off, 0x14
+.equ afrh_off, 0x24
 
 // Values
 .equ gpioa_en, 0b1 << 17
@@ -21,9 +23,31 @@
 .global gpiob_set_mode
 .global gpioa_set_bit
 .global gpiob_set_bit
+.global af_test
+
+.equ af_mask, 0xfffff00f
+.equ af_mask1, 0x00000440
+.equ od_mask, 0x00000600
 
 .section .text
 /** Public */
+
+af_test:
+	// AF
+	ldr r0, =(gpioa + afrh_off)
+	ldr r1, [r0]
+	ldr r2, =af_mask
+	ands r1, r1, r2
+	ldr r2, =af_mask1
+	orrs r1, r1, r2
+	str r1, [r0]
+	// Open drain
+	ldr r0, =(gpioa + otype_off)
+	ldr r1, [r0]
+	ldr r2, =od_mask
+	orrs r1, r1, r2
+	str r1, [r0]
+	bx lr
 
 /**	Enable Clock for GPIOs (A + B)
 */
@@ -52,8 +76,8 @@ gpioa_set_mode:
 *	r1: value
 */
 gpiob_set_mode:
-	ldr r2, =(gpiob + mode_off)
 	push {lr}
+	ldr r2, =(gpiob + mode_off)
 	bl gpio_set_mode
 	pop {pc}
 
@@ -116,3 +140,10 @@ gpio_set_bit:
 	orrs r3, r3, r1
 	str r3, [r2]
 	bx lr
+
+/** Set alternate function setting
+*	r0: port
+*	r1: value
+*	r2: reg_addr
+*/
+gpio_set_af:

@@ -20,6 +20,10 @@ main:
 	// Enable I2C
 	bl i2c_enable
 	bl i2c_setup
+	// LCD setup
+	bl lcd_init
+	movs r0, #'c'
+	bl lcd_write_char
 loop:
 	nop
 	b loop
