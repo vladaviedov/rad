@@ -53,12 +53,14 @@ lcd_write8:
 	push {r0}
 	movs r1, #0xf0
 	// Write top 4 bits
-	orrs r0, r0, r1
+	ands r0, r0, r1
+	push {r1}
 	bl lcd_write4
+	pop {r1}
 	// Write bottom 4 bits
 	pop {r0}
 	lsls r0, r0, #4
-	orrs r0, r0, r1
+	ands r0, r0, r1
 	bl lcd_write4
 	pop {pc}
 
@@ -68,18 +70,19 @@ lcd_write8:
 lcd_write8_rs:
 	push {lr}
 	push {r0}
-	movs r1, #0xf0
 	ldr r2, =flag_rs
-	orrs r1, r1, r2
+	movs r1, #0xf0
 	// Write top 4 bits
-	orrs r0, r0, r1
-	push {r1}
+	ands r0, r0, r1
+	orrs r0, r0, r2
+	push {r1, r2}
 	bl lcd_write4
-	pop {r1}
+	pop {r1, r2}
 	// Write bottom 4 bits
 	pop {r0}
 	lsls r0, r0, #4
-	orrs r0, r0, r1
+	ands r0, r0, r1
+	orrs r0, r0, r2
 	bl lcd_write4
 	pop {pc}
 

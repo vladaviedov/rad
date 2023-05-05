@@ -71,6 +71,7 @@ i2c_write_byte:
 	// Set address & initiate write
 	ldr r2, =(i2c + cr2_off)
 	ldr r3, =cr2_write_byte
+	lsls r0, r0, #1
 	orrs r3, r3, r0
 	movs r4, r3
 	str r4, [r2]
