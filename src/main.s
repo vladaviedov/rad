@@ -22,7 +22,30 @@ main:
 	bl i2c_setup
 	// LCD setup
 	bl lcd_init
-	movs r0, #'c'
+	// Hello World
+	movs r0, #'H'
+	bl lcd_write_char
+	movs r0, #'e'
+	bl lcd_write_char
+	movs r0, #'l'
+	bl lcd_write_char
+	movs r0, #'l'
+	bl lcd_write_char
+	movs r0, #'o'
+	bl lcd_write_char
+	movs r0, #' '
+	bl lcd_write_char
+	movs r0, #'W'
+	bl lcd_write_char
+	movs r0, #'o'
+	bl lcd_write_char
+	movs r0, #'r'
+	bl lcd_write_char
+	movs r0, #'l'
+	bl lcd_write_char
+	movs r0, #'d'
+	bl lcd_write_char
+	movs r0, #'!'
 	bl lcd_write_char
 loop:
 	nop
