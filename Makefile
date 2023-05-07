@@ -2,6 +2,8 @@ AS=arm-none-eabi-as
 LD=arm-none-eabi-ld
 OBJCOPY=arm-none-eabi-objcopy
 GDB=arm-none-eabi-gdb
+STFLASH=st-flash
+STUTIL=st-util
 
 ASFLAGS=-mcpu=cortex-m0 -mthumb -g
 LDFLAGS=-T linker.ld -e vtable
@@ -40,10 +42,11 @@ clean:
 # Flash to device
 .PHONY: flash
 flash:
-	st-flash write $(TARGET) 0x8000000
+	$(STFLASH) write $(TARGET) 0x8000000
 
 # Connect with GDB
 .PHONY: debug
 debug:
-	st-util &
+	$(STUTIL) &
 	$(GDB) -ex 'target extended-remote localhost:4242' -ex 'load' $(ELF)
+	kill %1
