@@ -11,6 +11,7 @@
 .equ ahben_off, 0x14
 .equ mode_off, 0x00
 .equ otype_off, 0x04
+.equ pupd_off, 0x0c
 .equ data_off, 0x14
 .equ afrh_off, 0x24
 
@@ -23,6 +24,8 @@
 .global gpiob_set_mode
 .global gpioa_set_bit
 .global gpiob_set_bit
+.global gpioa_set_pupd
+.global gpiob_set_pupd
 .global af_test
 
 .equ af_mask, 0xfffff00f
@@ -101,6 +104,26 @@ gpiob_set_bit:
 	bl gpio_set_bit
 	pop {pc}
 
+/** Set pull-up/pull-down for GPIOA
+*	r0: port
+*	r1: value
+*/
+gpioa_set_pupd:
+	ldr r2, =(gpioa + pupd_off)
+	push {lr}
+	bl gpio_set_pupd
+	pop {pc}
+
+/** Set pull-up/pull-down for GPIOA
+*	r0: port
+*	r1: value
+*/
+gpiob_set_pupd:
+	ldr r2, =(gpiob + pupd_off)
+	push {lr}
+	bl gpio_set_pupd
+	pop {pc}
+
 /** Private */
 
 /** Set mode for GPIO
@@ -131,6 +154,26 @@ gpio_set_mode:
 gpio_set_bit:
 	// Compute bit masks
 	movs r4, #0b1
+	lsls r4, r4, r0
+	mvns r4, r4
+	lsls r1, r1, r0
+	// Set bit
+	ldr r3, [r2]
+	ands r3, r3, r4
+	orrs r3, r3, r1
+	str r3, [r2]
+	bx lr
+
+/** Set pull-up/pull-down
+*	r0: port
+*	r1: value
+*	r2: reg_addr
+*/
+gpio_set_pupd:
+	// Compute bit masks
+	movs r4, #2
+	muls r0, r0, r4
+	movs r4, #0b11
 	lsls r4, r4, r0
 	mvns r4, r4
 	lsls r1, r1, r0
