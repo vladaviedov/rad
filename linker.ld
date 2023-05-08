@@ -9,7 +9,7 @@ _stack_end = 0x20000fff;
 SECTIONS
 {
 	.text : {
-		build/reset.o (.text)
+		build/interrupt.o (.text)
 		*(.text)
 	} > FLASH
 }

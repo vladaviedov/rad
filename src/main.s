@@ -47,6 +47,9 @@ main:
 	bl lcd_write_char
 	movs r0, #'!'
 	bl lcd_write_char
+	bl exti_enable 
+	bl exti_link_pa0
+	wfi
 loop:
 	nop
 	b loop
