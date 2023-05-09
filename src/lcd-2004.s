@@ -18,6 +18,7 @@
 .equ function_set, 0x20
 
 .global lcd_init
+.global lcd_clear
 .global lcd_write_char
 
 .section .text
@@ -27,62 +28,65 @@
 */
 lcd_init:
 	push {lr}
-	push {r0}
+	push {r0, r1}
 	ldr r0, =return_home
+	movs r1, #0
 	bl lcd_write8
 	ldr r0, =clear_display
+	movs r1, #0
 	bl lcd_write8
 	ldr r0, =function_set
+	movs r1, #0
 	bl lcd_write8
-	pop {r0}
+	pop {r0, r1}
+	pop {pc}
+
+/** Clear CLD display
+*/
+lcd_clear:
+	push {lr}
+	push {r0, r1}
+	ldr r0, =return_home
+	movs r1, #0
+	bl lcd_write8
+	ldr r0, =clear_display
+	movs r1, #0
+	bl lcd_write8
+	pop {r0, r1}
 	pop {pc}
 
 /** Write char to LCD
-*	r0: data
+*	r0: char
 */
 lcd_write_char:
-	b lcd_write8_rs
+	push {lr}
+	push {r0, r1}
+	movs r1, #1
+	bl lcd_write8
+	pop {r0, r1}
+	pop {pc}
 
 /** Private */
 
 /** LCD write of 8 bytes
 *	r0: data
+*	r1: rs
 */
 lcd_write8:
 	push {lr}
-	push {r0}
-	movs r1, #0xf0
+	movs r2, #0xf0
 	// Write top 4 bits
-	ands r0, r0, r1
-	push {r1}
-	bl lcd_write4
-	pop {r1}
-	// Write bottom 4 bits
-	pop {r0}
-	lsls r0, r0, #4
-	ands r0, r0, r1
-	bl lcd_write4
-	pop {pc}
-
-/** LCD text write of 8 bytes
-*	r0: data
-*/
-lcd_write8_rs:
-	push {lr}
 	push {r0}
-	ldr r2, =flag_rs
-	movs r1, #0xf0
-	// Write top 4 bits
-	ands r0, r0, r1
-	orrs r0, r0, r2
+	ands r0, r0, r2
+	orrs r0, r0, r1
 	push {r1, r2}
 	bl lcd_write4
 	pop {r1, r2}
 	// Write bottom 4 bits
 	pop {r0}
 	lsls r0, r0, #4
-	ands r0, r0, r1
-	orrs r0, r0, r2
+	ands r0, r0, r2
+	orrs r0, r0, r1
 	bl lcd_write4
 	pop {pc}
 

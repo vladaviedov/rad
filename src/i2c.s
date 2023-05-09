@@ -42,19 +42,23 @@
 /** Enable Clock for I2C1
 */
 i2c_enable:
+	push {r0-r2}
 	ldr r0, =(rcc + apb1en_off)
 	ldr r1, [r0]
 	ldr r2, =i2c1_en
 	orrs r1, r2
 	str r1, [r0]
+	pop {r0-r2}
 	bx lr
 
 /** Setup I2C pins, timings and settings
 */
 i2c_setup:
 	push {lr}
+	push {r0-r2}
 	bl i2c_take_pins
 	bl i2c_configure
+	pop {r0-r2}
 	pop {pc}
 
 /** Write data to I2C
@@ -63,7 +67,7 @@ i2c_setup:
 *	r1: data
 */
 i2c_write_byte:
-	push {r0, r1, r2, r3, r4}
+	push {r0-r4}
 	// Write data
 	ldr r2, =(i2c + datatx_off)
 	movs r3, r1
@@ -92,7 +96,7 @@ wait:
 	ldr r4, [r2]
 	orrs r4, r4, r3
 	str r4, [r2]
-	pop {r0, r1, r2, r3, r4}
+	pop {r0-r4}
 	bx lr
 
 /** Private */
