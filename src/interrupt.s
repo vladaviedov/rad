@@ -2,10 +2,6 @@
 .cpu cortex-m0
 .thumb
 
-.equ nvic, 0xe000e100
-.equ nvic_icpr, 0x180
-.equ int5, 1 << 5
-
 .equ delay, (5000 * 48) / 4
 
 .global vtable
@@ -20,6 +16,8 @@ vtable:
 	.word fault_isr
 .org 0x54
 	.word rad_isr
+.org 0x7c
+	.word timer_isr
 .org 0xc0
 
 reset_isr:
@@ -47,5 +45,10 @@ delay:
 	movs r1, #0
 	bl gpiob_set_bit
 	pop {pc}
+
+.thumb_func
+timer_isr:
+	nop
+	bx lr
 
 .end

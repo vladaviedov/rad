@@ -6,7 +6,6 @@
 .equ rcc, 0x40021000
 .equ syscfg, 0x40010000
 .equ exti, 0x40010400
-.equ nvic, 0xe000e100
 
 // Offsets
 .equ rcc_apb2enr_off, 0x18
@@ -15,16 +14,12 @@
 .equ exti_rtsr_off, 0x08
 .equ exti_ftsr_off, 0x0c
 .equ exti_pr_off, 0x14
-.equ nvic_iser, 0x00
-.equ nvic_ipr1, 0x304
 
 // Values
 .equ syscfg_en, 1 << 0
 .equ exti_gpioa_mask, 0xfffffff0
 .equ exti_gpioa_link, 0x0 << 0
 .equ exti0, 1 << 0
-.equ interrupt5_en, 1 << 5
-.equ interrupt5_pr_mask, 0xffff00ff
 
 .global exti_enable
 .global exti_link_pa0
@@ -77,7 +72,11 @@ exti_link_pa0:
 	ldr r2, [r0]
 	ands r2, r2, r1
 	str r2, [r0]
-	bl nvic_test
+	// Enable int & set priority
+	movs r0, #5
+	bl nvic_enable_int
+	movs r1, #0b00
+	bl nvic_set_priority
 	pop {pc}
 
 exti_clear_int0:
@@ -89,21 +88,5 @@ exti_clear_int0:
 	bx lr
 
 /** Private */
-
-/** Enable interrupt in NVIC and set priority */
-nvic_test:
-	// Enable
-	ldr r0, =(nvic + nvic_iser)
-	ldr r1, =interrupt5_en
-	ldr r2, [r0]
-	orrs r2, r2, r1
-	str r2, [r0]
-	// Priority
-	ldr r0, =(nvic + nvic_ipr1)
-	ldr r1, =interrupt5_pr_mask
-	ldr r2, [r0]
-	ands r2, r2, r1
-	str r2, [r0]
-	bx lr
 
 .end
