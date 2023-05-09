@@ -25,20 +25,30 @@ reset_isr:
 	mov sp, r0
 	b main
 
+.thumb_func
 fault_isr:
 	b fault_isr
 
+.thumb_func
 rad_isr:
-	// Clear interrupt
-	ldr r0, =(nvic + nvic_icpr)
-	ldr r1, =int5
-	ldr r2, [r0]
-	orrs r2, r2, r1
-	str r2, [r0]
-	bx lr
-	// Do something
-	movs r0, #0x27
-	movs r1, #'a'
-	b i2c_write_byte
+	push {lr}
+	movs r0, #3
+	movs r1, #1
+	cmp r2, r1
+	beq off
+	// Turn on
+	push {r0, r1, r2}
+	bl gpiob_set_bit
+	pop {r0, r1, r2}
+	movs r2, #1
+	pop {pc}
+off:
+	// Turn off
+	movs r1, #0
+	push {r0, r1, r2}
+	bl gpiob_set_bit
+	pop {r0, r1, r2}
+	movs r2, #0
+	pop {pc}
 
 .end

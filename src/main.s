@@ -15,7 +15,7 @@ main:
 	bl gpiob_set_mode
 	// Set GPIOB port 3 to high
 	movs r0, #3
-	movs r1, #1
+	movs r1, #0
 	bl gpiob_set_bit
 	// Enable I2C
 	bl i2c_enable
@@ -49,7 +49,7 @@ main:
 	bl lcd_write_char
 	bl exti_enable 
 	bl exti_link_pa0
-	wfi
+	movs r2, #0
 loop:
 	nop
 	b loop
