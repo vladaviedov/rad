@@ -36,6 +36,7 @@
 /** Public */
 
 af_test:
+	push {r0-r2}
 	// AF
 	ldr r0, =(gpioa + afrh_off)
 	ldr r1, [r0]
@@ -50,11 +51,13 @@ af_test:
 	ldr r2, =od_mask
 	orrs r1, r1, r2
 	str r1, [r0]
+	pop {r0-r2}
 	bx lr
 
 /**	Enable Clock for GPIOs (A + B)
 */
 gpio_enable:
+	push {r0-r2}
 	ldr r0, =(rcc + ahben_off)
 	ldr r1, [r0]
 	ldr r2, =gpioa_en
@@ -62,6 +65,7 @@ gpio_enable:
 	ldr r2, =gpiob_en
 	orrs r1, r2
 	str r1, [r0]
+	pop {r0-r2}
 	bx lr
 
 /**	Set mode for a GPIOA pin
@@ -69,9 +73,11 @@ gpio_enable:
 *	r1: value
 */
 gpioa_set_mode:
-	ldr r2, =(gpioa + mode_off)
 	push {lr}
+	push {r0-r4}
+	ldr r2, =(gpioa + mode_off)
 	bl gpio_set_mode
+	pop {r0-r4}
 	pop {pc}
 
 /**	Set mode for a GPIOA pin
@@ -80,8 +86,10 @@ gpioa_set_mode:
 */
 gpiob_set_mode:
 	push {lr}
+	push {r0-r4}
 	ldr r2, =(gpiob + mode_off)
 	bl gpio_set_mode
+	pop {r0-r4}
 	pop {pc}
 
 /**	Set bit for a GPIOA pin
@@ -89,9 +97,11 @@ gpiob_set_mode:
 *	r1: value
 */
 gpioa_set_bit:
-	ldr r2, =(gpioa + data_off)
 	push {lr}
+	push {r0-r4}
+	ldr r2, =(gpioa + data_off)
 	bl gpio_set_bit
+	pop {r0-r4}
 	pop {pc}
 
 /** Set bit for GPIOB pin
@@ -99,9 +109,11 @@ gpioa_set_bit:
 *	r1: value
 */
 gpiob_set_bit:
-	ldr r2, =(gpiob + data_off)
 	push {lr}
+	push {r0-r4}
+	ldr r2, =(gpiob + data_off)
 	bl gpio_set_bit
+	pop {r0-r4}
 	pop {pc}
 
 /** Set pull-up/pull-down for GPIOA
@@ -109,9 +121,11 @@ gpiob_set_bit:
 *	r1: value
 */
 gpioa_set_pupd:
-	ldr r2, =(gpioa + pupd_off)
 	push {lr}
+	push {r0-r4}
+	ldr r2, =(gpioa + pupd_off)
 	bl gpio_set_pupd
+	pop {r0-r4}
 	pop {pc}
 
 /** Set pull-up/pull-down for GPIOA
@@ -119,9 +133,11 @@ gpioa_set_pupd:
 *	r1: value
 */
 gpiob_set_pupd:
-	ldr r2, =(gpiob + pupd_off)
 	push {lr}
+	push {r0-r4}
+	ldr r2, =(gpiob + pupd_off)
 	bl gpio_set_pupd
+	pop {r0-r4}
 	pop {pc}
 
 /** Private */
