@@ -14,6 +14,7 @@
 .equ exti_imr_off, 0x00
 .equ exti_rtsr_off, 0x08
 .equ exti_ftsr_off, 0x0c
+.equ exti_pr_off, 0x14
 .equ nvic_iser, 0x00
 .equ nvic_ipr1, 0x304
 
@@ -27,6 +28,7 @@
 
 .global exti_enable
 .global exti_link_pa0
+.global exti_clear_int0
 
 .section .text
 /** Public */
@@ -56,7 +58,7 @@ exti_link_pa0:
 	movs r1, #0b00
 	bl gpioa_set_mode
 	movs r0, #0
-	movs r1, #0b01
+	movs r1, #0b00
 	bl gpioa_set_pupd
 	// Enable mask
 	ldr r0, =(exti + exti_imr_off)
@@ -77,6 +79,14 @@ exti_link_pa0:
 	str r2, [r0]
 	bl nvic_test
 	pop {pc}
+
+exti_clear_int0:
+	ldr r0, =(exti + exti_pr_off)
+	ldr r1, =exti0
+	ldr r2, [r0]
+	str r1, [r0]
+	ldr r2, [r0]
+	bx lr
 
 /** Private */
 

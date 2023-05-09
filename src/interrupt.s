@@ -6,6 +6,8 @@
 .equ nvic_icpr, 0x180
 .equ int5, 1 << 5
 
+.equ delay, (5000 * 48) / 4
+
 .global vtable
 
 .section .text
@@ -31,24 +33,19 @@ fault_isr:
 
 .thumb_func
 rad_isr:
+	// Clear interrupt
 	push {lr}
+	bl exti_clear_int0
+	// Blink led
 	movs r0, #3
 	movs r1, #1
-	cmp r2, r1
-	beq off
-	// Turn on
-	push {r0, r1, r2}
 	bl gpiob_set_bit
-	pop {r0, r1, r2}
-	movs r2, #1
-	pop {pc}
-off:
-	// Turn off
+	ldr r2, =delay
+delay:
+	subs r2, r2, #1
+	bne delay
 	movs r1, #0
-	push {r0, r1, r2}
 	bl gpiob_set_bit
-	pop {r0, r1, r2}
-	movs r2, #0
 	pop {pc}
 
 .end

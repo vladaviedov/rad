@@ -49,7 +49,6 @@ main:
 	bl lcd_write_char
 	bl exti_enable 
 	bl exti_link_pa0
-	movs r2, #0
 loop:
 	nop
 	b loop
