@@ -48,7 +48,8 @@ delay:
 
 .thumb_func
 timer_isr:
-	nop
-	bx lr
+	push {lr}
+	bl timer_clear_int
+	pop {pc}
 
 .end

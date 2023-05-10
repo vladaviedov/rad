@@ -49,6 +49,8 @@ main:
 	bl lcd_write_char
 	bl exti_enable 
 	bl exti_link_pa0
+	bl timer_setup
+	bl timer_start
 loop:
 	nop
 	b loop
