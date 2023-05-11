@@ -23,7 +23,7 @@
 .equ cc1_int_en, 1 << 1
 .equ cc1_output_preload, 1 << 3
 .equ cc1if, 1 << 1
-.equ target_value, 0x03000000
+.equ target_value, 0x10000000
 
 .global timer_setup
 .global timer_start

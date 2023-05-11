@@ -44,12 +44,16 @@ delay:
 	bne delay
 	movs r1, #0
 	bl gpiob_set_bit
+	adds r5, r5, #1
 	pop {pc}
 
 .thumb_func
 timer_isr:
 	push {lr}
 	bl timer_clear_int
+	movs r0, r5
+	bl lcd_write_num
+	movs r5, #0
 	pop {pc}
 
 .end

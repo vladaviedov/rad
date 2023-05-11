@@ -20,6 +20,7 @@
 .global lcd_init
 .global lcd_clear
 .global lcd_write_char
+.global lcd_write_num
 
 .section .text
 /** Public */
@@ -64,6 +65,25 @@ lcd_write_char:
 	movs r1, #1
 	bl lcd_write8
 	pop {r0, r1}
+	pop {pc}
+
+/** Write number to display
+*	r0: value
+*/
+lcd_write_num:
+	push {lr}
+	push {r0-r4}
+	bl num_to_data_arr
+	movs r2, r0
+num_loop:
+	pop {r0}
+	movs r1, #1
+	push {r2}
+	bl lcd_write8
+	pop {r2}
+	subs r2, r2, #1
+	bne num_loop
+	pop {r0-r4}
 	pop {pc}
 
 /** Private */
@@ -113,3 +133,25 @@ lcd_write4:
 	bl i2c_write_byte
 	// TODO: sleep
 	pop {pc}
+
+/** Convert number to writable characters
+*	r0: number
+*	Returns:
+*	r0: byte count
+*/
+num_to_data_arr:
+	push {lr}
+	pop {r4}
+	movs r1, #10
+	movs r3, #0
+recurse:
+	adds r3, r3, #1
+	bl math_mod
+	adds r2, r2, #'0'
+	push {r2}
+	bl math_div
+	movs r0, r2
+	bne recurse
+	// Done
+	movs r0, r3
+	bx r4
