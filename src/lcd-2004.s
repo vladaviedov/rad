@@ -16,11 +16,13 @@
 .equ clear_display, 0x01
 .equ return_home, 0x02
 .equ function_set, 0x20
+.equ set_address, 0x80
 
 .global lcd_init
 .global lcd_clear
 .global lcd_write_char
 .global lcd_write_num
+.global lcd_move_to
 
 .section .text
 /** Public */
@@ -29,7 +31,7 @@
 */
 lcd_init:
 	push {lr}
-	push {r0, r1}
+	push {r0-r2}
 	ldr r0, =return_home
 	movs r1, #0
 	bl lcd_write8
@@ -39,21 +41,21 @@ lcd_init:
 	ldr r0, =function_set
 	movs r1, #0
 	bl lcd_write8
-	pop {r0, r1}
+	pop {r0-r2}
 	pop {pc}
 
 /** Clear CLD display
 */
 lcd_clear:
 	push {lr}
-	push {r0, r1}
+	push {r0-r2}
 	ldr r0, =return_home
 	movs r1, #0
 	bl lcd_write8
 	ldr r0, =clear_display
 	movs r1, #0
 	bl lcd_write8
-	pop {r0, r1}
+	pop {r0-r2}
 	pop {pc}
 
 /** Write char to LCD
@@ -61,10 +63,10 @@ lcd_clear:
 */
 lcd_write_char:
 	push {lr}
-	push {r0, r1}
+	push {r0-r2}
 	movs r1, #1
 	bl lcd_write8
-	pop {r0, r1}
+	pop {r0-r2}
 	pop {pc}
 
 /** Write number to display
@@ -84,6 +86,20 @@ num_loop:
 	subs r2, r2, #1
 	bne num_loop
 	pop {r0-r4}
+	pop {pc}
+
+/** Move cursor to location
+*	r0: location
+*/
+lcd_move_to:
+	push {lr}
+	push {r0-r2}
+	ldr r1, =set_address
+	orrs r1, r1, r0
+	movs r0, r1
+	movs r1, #0
+	bl lcd_write8
+	pop {r0-r2}
 	pop {pc}
 
 /** Private */

@@ -51,6 +51,14 @@ delay:
 timer_isr:
 	push {lr}
 	bl timer_clear_int
+	movs r0, #20
+	bl lcd_move_to
+	movs r0, #' '
+	bl lcd_write_char
+	bl lcd_write_char
+	bl lcd_write_char
+	movs r0, #20
+	bl lcd_move_to
 	movs r0, r5
 	bl lcd_write_num
 	movs r5, #0
