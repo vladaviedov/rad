@@ -23,8 +23,8 @@
 .equ cc1_int_en, 1 << 1
 .equ cc1_output_preload, 1 << 3
 .equ cc1if, 1 << 1
-// 120 seconds
-.equ target_value, 0x39387000
+// 60 seconds
+.equ target_value, 0x1c9c3800
 
 .global timer_setup
 .global timer_start

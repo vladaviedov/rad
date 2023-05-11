@@ -45,12 +45,14 @@ delay:
 	movs r1, #0
 	bl gpiob_set_bit
 	adds r5, r5, #1
+	adds r6, r6, #1
 	pop {pc}
 
 .thumb_func
 timer_isr:
 	push {lr}
 	bl timer_clear_int
+	// Write current counter
 	movs r0, #20
 	bl lcd_move_to
 	movs r0, #' '
@@ -62,6 +64,17 @@ timer_isr:
 	movs r0, r5
 	bl lcd_write_num
 	movs r5, #0
+	// Write cumulative counter
+	movs r0, #30
+	bl lcd_move_to
+	movs r0, #' '
+	bl lcd_write_char
+	bl lcd_write_char
+	bl lcd_write_char
+	movs r0, #30
+	bl lcd_move_to
+	movs r0, r6
+	bl lcd_write_num
 	pop {pc}
 
 .end
