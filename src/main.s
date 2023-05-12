@@ -51,6 +51,7 @@ main:
 	bl exti_link_pa0
 	bl timer_setup
 	bl timer_start
+	movs r5, #0
 	movs r6, #0
 	movs r7, #0
 loop:

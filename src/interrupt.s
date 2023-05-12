@@ -75,6 +75,18 @@ timer_isr:
 	bl lcd_move_to
 	movs r0, r6
 	bl lcd_write_num
+	// Print minute count
+	adds r7, r7, #1
+	movs r0, #15
+	bl lcd_move_to
+	movs r0, #' '
+	bl lcd_write_char
+	bl lcd_write_char
+	bl lcd_write_char
+	movs r0, #15
+	bl lcd_move_to
+	movs r0, r7
+	bl lcd_write_num
 	pop {pc}
 
 .end

@@ -18,7 +18,7 @@ math_div:
 	movs r2, #0
 div_loop:
 	subs r0, r0, r1
-	bls div_end
+	blo div_end
 	adds r2, r2, #1
 	b div_loop
 div_end:
