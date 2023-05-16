@@ -20,6 +20,7 @@ vtable:
 	.word timer_isr
 .org 0xc0
 
+.thumb_func
 reset_isr:
 	ldr r0, =_stack_end
 	mov sp, r0
