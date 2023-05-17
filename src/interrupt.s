@@ -3,6 +3,7 @@
 .thumb
 
 .equ delay, (5000 * 48) / 4
+.equ value_off, 10
 
 .global vtable
 
@@ -54,37 +55,37 @@ timer_isr:
 	push {lr}
 	bl timer_clear_int
 	// Write current counter
-	movs r0, #20
+	ldr r0, =(cpm_pos + value_off)
 	bl lcd_move_to
 	movs r0, #' '
 	bl lcd_write_char
 	bl lcd_write_char
 	bl lcd_write_char
-	movs r0, #20
+	ldr r0, =(cpm_pos + value_off)
 	bl lcd_move_to
 	movs r0, r5
 	bl lcd_write_num
 	movs r5, #0
 	// Write cumulative counter
-	movs r0, #30
+	ldr r0, =(total_pos + value_off)
 	bl lcd_move_to
 	movs r0, #' '
 	bl lcd_write_char
 	bl lcd_write_char
 	bl lcd_write_char
-	movs r0, #30
+	ldr r0, =(total_pos + value_off)
 	bl lcd_move_to
 	movs r0, r6
 	bl lcd_write_num
 	// Print minute count
 	adds r7, r7, #1
-	movs r0, #15
+	ldr r0, =(minutes_pos + value_off)
 	bl lcd_move_to
 	movs r0, #' '
 	bl lcd_write_char
 	bl lcd_write_char
 	bl lcd_write_char
-	movs r0, #15
+	ldr r0, =(minutes_pos + value_off)
 	bl lcd_move_to
 	movs r0, r7
 	bl lcd_write_num

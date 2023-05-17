@@ -90,7 +90,6 @@ str_end:
 	pop {r0-r3}
 	pop {pc}
 
-
 /** Write number to display
 *	r0: value
 */

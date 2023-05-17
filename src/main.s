@@ -22,9 +22,21 @@ main:
 	bl i2c_setup
 	// LCD setup
 	bl lcd_init
-	// Hello World
-	ldr r0, =hello_world
-	movs r1, 12
+	// Print lables
+	ldr r0, =minutes_pos
+	bl lcd_move_to
+	ldr r0, =minutes
+	ldr r1, =minutes_length
+	bl lcd_write_str
+	ldr r0, =cpm_pos
+	bl lcd_move_to
+	ldr r0, =cpm
+	ldr r1, =cpm_length
+	bl lcd_write_str
+	ldr r0, =total_pos
+	bl lcd_move_to
+	ldr r0, =total
+	ldr r1, =total_length
 	bl lcd_write_str
 	// Interrupt setup
 	bl exti_enable 
@@ -37,8 +49,5 @@ main:
 loop:
 	nop
 	b loop
-
-hello_world:
-	.ascii "Hello World!"
 
 .end
