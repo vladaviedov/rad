@@ -17,6 +17,7 @@
 .equ return_home, 0x02
 .equ function_set, 0x20
 .equ set_address, 0x80
+.equ cursor_off, 0x0c
 
 .global lcd_init
 .global lcd_clear
@@ -40,6 +41,9 @@ lcd_init:
 	movs r1, #0
 	bl lcd_write8
 	ldr r0, =function_set
+	movs r1, #0
+	bl lcd_write8
+	ldr r0, =cursor_off
 	movs r1, #0
 	bl lcd_write8
 	pop {r0-r2}
