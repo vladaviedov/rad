@@ -23,30 +23,10 @@ main:
 	// LCD setup
 	bl lcd_init
 	// Hello World
-	movs r0, #'H'
-	bl lcd_write_char
-	movs r0, #'e'
-	bl lcd_write_char
-	movs r0, #'l'
-	bl lcd_write_char
-	movs r0, #'l'
-	bl lcd_write_char
-	movs r0, #'o'
-	bl lcd_write_char
-	movs r0, #' '
-	bl lcd_write_char
-	movs r0, #'W'
-	bl lcd_write_char
-	movs r0, #'o'
-	bl lcd_write_char
-	movs r0, #'r'
-	bl lcd_write_char
-	movs r0, #'l'
-	bl lcd_write_char
-	movs r0, #'d'
-	bl lcd_write_char
-	movs r0, #'!'
-	bl lcd_write_char
+	ldr r0, =hello_world
+	movs r1, 12
+	bl lcd_write_str
+	// Interrupt setup
 	bl exti_enable 
 	bl exti_link_pa0
 	bl timer_setup
@@ -57,5 +37,8 @@ main:
 loop:
 	nop
 	b loop
+
+hello_world:
+	.ascii "Hello World!"
 
 .end

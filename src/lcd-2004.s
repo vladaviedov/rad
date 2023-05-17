@@ -21,6 +21,7 @@
 .global lcd_init
 .global lcd_clear
 .global lcd_write_char
+.global lcd_write_str
 .global lcd_write_num
 .global lcd_move_to
 
@@ -68,6 +69,27 @@ lcd_write_char:
 	bl lcd_write8
 	pop {r0-r2}
 	pop {pc}
+
+/** Write string to LCD
+*	r0: string
+*	r1: length
+*/
+lcd_write_str:
+	push {lr}
+	push {r0-r3}
+	movs r2, r0
+	movs r3, #0
+str_loop:
+	subs r1, r1, #1
+	blo str_end
+	ldrb r0, [r2, r3]
+	adds r3, r3, #1
+	bl lcd_write_char
+	b str_loop
+str_end:
+	pop {r0-r3}
+	pop {pc}
+
 
 /** Write number to display
 *	r0: value
