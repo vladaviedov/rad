@@ -89,6 +89,20 @@ timer_isr:
 	bl lcd_move_to
 	movs r0, r7
 	bl lcd_write_num
+	// Write average CPM
+	ldr r0, =(avg_cpm_pos + value_off)
+	bl lcd_move_to
+	movs r0, #' '
+	bl lcd_write_char
+	bl lcd_write_char
+	bl lcd_write_char
+	ldr r0, =(avg_cpm_pos + value_off)
+	bl lcd_move_to
+	movs r0, r6
+	movs r1, r7
+	bl math_div
+	movs r0, r2
+	bl lcd_write_num
 	pop {pc}
 
 .end

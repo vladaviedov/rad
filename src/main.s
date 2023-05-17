@@ -33,6 +33,11 @@ main:
 	ldr r0, =cpm
 	ldr r1, =cpm_length
 	bl lcd_write_str
+	ldr r0, =avg_cpm_pos
+	bl lcd_move_to
+	ldr r0, =avg_cpm
+	ldr r1, =avg_cpm_length
+	bl lcd_write_str
 	ldr r0, =total_pos
 	bl lcd_move_to
 	ldr r0, =total
